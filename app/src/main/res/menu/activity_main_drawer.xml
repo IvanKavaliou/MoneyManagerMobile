@@ -9,11 +9,11 @@
             android:icon="@drawable/ic_accounts"
             android:title="@string/accounts" />
         <item
-            android:id="@+id/nav_transactions"
+            android:id="@+id/nav_incomes"
             android:icon="@drawable/ic_transactions"
             android:title="@string/incomes" />
         <item
-            android:id="@+id/nav_currency_rates"
+            android:id="@+id/nav_cexpenses"
             android:icon="@drawable/ic_transactions"
             android:title="@string/expenses" />
     </group>

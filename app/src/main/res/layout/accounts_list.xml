@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
     <TextView
         android:id="@+id/textAccountCurrency"
         android:layout_width="wrap_content"
@@ -12,11 +17,28 @@
         android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:textSize="40dp"
-        android:padding="2dp"
-        android:textColor="#4d4d4d" />
 
+        android:textColor="#4d4d4d" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/balance"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+     />
+        <TextView
+            android:id="@+id/textAccountBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="123123.123"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+
+            android:textColor="#f00" />
+
+    </LinearLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_marginLeft="20dp"
         android:layout_width="wrap_content"
