@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/transDate"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="2020-06-10"
+            />
+
+        <TextView
+            android:id="@+id/transTime"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="16:20" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/trnsCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="USD"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:textSize="30dp"
+        android:padding="2dp"
+        android:textColor="#4d4d4d" />
+
+    <TextView
+        android:id="@+id/trnsValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="123.12"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textSize="30dp"
+        android:padding="2dp"
+        android:textColor="#f00" />
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/transCategory"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textColor="#009900"
+            android:text="Sellary"
+            />
+
+        <TextView
+            android:id="@+id/transDescription"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textColor="#33cccc"
+            android:text="Sell mobile phonesdsadad asdasd" />
+    </LinearLayout>
+
+</LinearLayout>

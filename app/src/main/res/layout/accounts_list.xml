@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/textAccountCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="USD"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:textSize="40dp"
+        android:padding="2dp"
+        android:textColor="#4d4d4d" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAllCaps="true"
+            android:text="@string/expenses"/>
+
+        <TextView
+            android:id="@+id/expensesTextDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textAllCaps="true"
+            android:text="Day: 123123"/>
+        <TextView
+            android:id="@+id/expensesTextWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textAllCaps="true"
+            android:text="Week: 123123"/>
+        <TextView
+            android:id="@+id/expensesTextMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textAllCaps="true"
+            android:text="Month: 123123"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginLeft="20dp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textAllCaps="true"
+            android:text="@string/incomes"/>
+
+        <TextView
+            android:id="@+id/incomesTextDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textAllCaps="true"
+            android:text="Day: 123123"/>
+        <TextView
+            android:id="@+id/incomesTextWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textAllCaps="true"
+            android:text="Week: 123123"/>
+        <TextView
+            android:id="@+id/incomesTextMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textAllCaps="true"
+            android:text="Month: 123123"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textErrors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Errors"
+            android:visibility="gone"
+            android:textColor="#f00"
+            android:textStyle="bold" />
+        <ListView
+            android:id="@+id/accounts_list"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/addAccountLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <ListView
+                android:id="@+id/accountAddList"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:choiceMode="singleChoice"/>
+            <Button
+                android:id="@+id/buttonAccountAdd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ADD"/>
+        </LinearLayout>
+
+
+        <ListView
+            android:id="@+id/transactions_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/currecny_rates_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/topupLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/textBalanceTopUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Balance: "
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editTextTopUpValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Value"
+                android:inputType="numberDecimal" />
+
+            <Button
+                android:id="@+id/buttonTopUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Top up" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
