@@ -1,5 +1,6 @@
 package kavaliou.ivan.net.moneymanagermobile.utils;
 
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -27,7 +28,7 @@ public class ResponseErrorListner  implements Response.ErrorListener {
                 String body = new String(error.networkResponse.data,"UTF-8");
                 try {
                     JSONObject jsonError = new JSONObject(body);
-                    if (statusCode.equals("406") || statusCode.equals("404") || statusCode.equals("403")){
+                    if (statusCode.equals("406") || statusCode.equals("404") || statusCode.equals("403") || statusCode.equals("500")){
                         errorTextView.setText(jsonError.getString("message"));
                     } else {
                         JSONArray errors = jsonError.getJSONArray("errors");
@@ -48,5 +49,6 @@ public class ResponseErrorListner  implements Response.ErrorListener {
         } else {
             errorTextView.setText(R.string.service_unavalible);
         }
+        errorTextView.setVisibility(View.VISIBLE);
     }
 }

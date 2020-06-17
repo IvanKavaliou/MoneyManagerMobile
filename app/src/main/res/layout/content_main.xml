@@ -25,12 +25,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
+        <Button
+            android:id="@+id/buttonAddIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/add_income"/>
 
         <ListView
             android:id="@+id/transactionsExpensesList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/buttonAddExpenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/add_expenses"/>
 
         <TextView
             android:id="@+id/textErrors"

@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kavaliou.ivan.net.moneymanagermobile">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="kavaliou.ivan.net.moneymanagermobile.LoginActivity">
+        <activity android:name=".TransactionActivity"></activity>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,9 +18,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="kavaliou.ivan.net.moneymanagermobile.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

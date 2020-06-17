@@ -1,6 +1,7 @@
 package kavaliou.ivan.net.moneymanagermobile;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Base64;
@@ -13,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +43,10 @@ import kavaliou.ivan.net.moneymanagermobile.Adapters.TransactionsListAdapter;
 import kavaliou.ivan.net.moneymanagermobile.forms.AccountForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.TransactionForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
+import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
+import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenTransActivMode;
+import kavaliou.ivan.net.moneymanagermobile.utils.enums.TransactionType;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +63,9 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<TransactionForm> transactionsIncomes;
     private ListView transactionsExpensesList;
     private ArrayList<TransactionForm> transactionsExpenses;
+    private Button buttonAddExpenses;
+    private Button buttonAddIncome;
+
 
 
     private ResponseErrorListner responseErrorListner;
@@ -70,6 +79,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         queue = Volley.newRequestQueue(this);
+
+        buttonAddExpenses = (Button) findViewById(R.id.buttonAddExpenses);
+        buttonAddExpenses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTransactionActivity(TransactionType.EXPENSES, OpenTransActivMode.ADD, null);
+            }
+        });
+        buttonAddIncome = (Button) findViewById(R.id.buttonAddIncome);
+        buttonAddIncome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTransactionActivity(TransactionType.INCOME, OpenTransActivMode.ADD, null);
+            }
+        });
+
+
+
         textErrors = (TextView) findViewById(R.id.textErrors);
         responseErrorListner = new ResponseErrorListner();
         responseErrorListner.setErrorTextView(textErrors);
@@ -98,6 +125,23 @@ public class MainActivity extends AppCompatActivity
 
         //queue = Volley.newRequestQueue(this);
 
+    }
+
+    private void update() {
+        initAccounts();
+        initTransactions();
+    }
+
+    private void openTransactionActivity(TransactionType type, OpenTransActivMode mode, TransactionForm form) {
+        Intent i = new Intent(this, TransactionActivity.class);
+        i.putExtra("user", user);
+        i.putExtra("mode", mode);
+        i.putExtra("type", type);
+        i.putExtra("accounts", accounts);
+        if (mode == OpenTransActivMode.EDIT){
+            i.putExtra("transactionForm", form);
+        }
+        startActivityForResult(i, 100);
     }
 
     private void initUser() {
@@ -133,7 +177,7 @@ public class MainActivity extends AppCompatActivity
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return authUser();
+                return AuthUtils.authUser(user);
             }
         };
         Volley.newRequestQueue(this).add(jRequest);
@@ -142,10 +186,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initTransactions(){
-        transactionsIncomeList = (ListView) findViewById(R.id.transactionsIncomeList);
         transactionsIncomes = new ArrayList<>();
-        transactionsExpensesList = (ListView) findViewById(R.id.transactionsExpensesList);
         transactionsExpenses = new ArrayList<>();
+
+        transactionsIncomeList = (ListView) findViewById(R.id.transactionsIncomeList);
+        transactionsIncomeList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                openTransactionActivity(
+                        TransactionType.INCOME,
+                        OpenTransActivMode.EDIT,
+                        transactionsIncomes.get(position));
+                return false;
+            }
+        });
+
+        transactionsExpensesList = (ListView) findViewById(R.id.transactionsExpensesList);
+        transactionsExpensesList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                openTransactionActivity(
+                        TransactionType.EXPENSES,
+                        OpenTransActivMode.EDIT,
+                        transactionsExpenses.get(position));
+                return false;
+            }
+        });
+
         JsonArrayRequest jRequestIncomes = new JsonArrayRequest(Request.Method.GET, URL_GET_INCOMES, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -168,7 +235,7 @@ public class MainActivity extends AppCompatActivity
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return authUser();
+                return AuthUtils.authUser(user);
             }
         };
         Volley.newRequestQueue(this).add(jRequestIncomes);
@@ -195,7 +262,7 @@ public class MainActivity extends AppCompatActivity
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return authUser();
+                return AuthUtils.authUser(user);
             }
         };
         Volley.newRequestQueue(this).add(jRequestExpenses);
@@ -204,12 +271,12 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public Map<String, String> authUser(){
-        HashMap<String, String> params = new HashMap<String, String>();
-        String creds = String.format("%s:%s",user.getEmail(),user.getPassword());
-        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
-        params.put("Authorization", auth);
-        return params;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==100){
+            update();
+        }
     }
 
     @Override
@@ -254,14 +321,20 @@ public class MainActivity extends AppCompatActivity
             accountsList.setVisibility(View.VISIBLE);
             transactionsExpensesList.setVisibility(View.GONE);
             transactionsIncomeList.setVisibility(View.GONE);
+            buttonAddExpenses.setVisibility(View.GONE);
+            buttonAddIncome.setVisibility(View.GONE);
         } else if (id == R.id.nav_incomes) {
             accountsList.setVisibility(View.GONE);
             transactionsExpensesList.setVisibility(View.GONE);
             transactionsIncomeList.setVisibility(View.VISIBLE);
+            buttonAddExpenses.setVisibility(View.GONE);
+            buttonAddIncome.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_cexpenses) {
             accountsList.setVisibility(View.GONE);
             transactionsExpensesList.setVisibility(View.VISIBLE);
             transactionsIncomeList.setVisibility(View.GONE);
+            buttonAddExpenses.setVisibility(View.VISIBLE);
+            buttonAddIncome.setVisibility(View.GONE);
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_logout) {

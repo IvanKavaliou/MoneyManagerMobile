@@ -134,10 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(){
-
         Gson gson = new Gson();
-
-
         JSONObject parameters = null;
         try {
             parameters = new JSONObject(gson.toJson(LoginForm.builder()

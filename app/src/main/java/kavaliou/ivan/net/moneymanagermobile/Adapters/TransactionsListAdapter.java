@@ -39,7 +39,7 @@ public class TransactionsListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
-        TransactionForm form = getTransactionForm(position);
+        final TransactionForm form = getTransactionForm(position);
         if ( v == null){
             v = LInflater.inflate(R.layout.transactions_list, parent, false);
         }
@@ -60,7 +60,6 @@ public class TransactionsListAdapter extends BaseAdapter {
 
         TextView transDescription = (TextView) v.findViewById(R.id.transDescription);
         transDescription.setText(form.getName());
-
         return v;
     }
 
