@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,7 +143,11 @@ public class TransactionActivity extends AppCompatActivity {
                 }
                 f.setDate(editDate.getText().toString());
                 f.setName(editDescription.getText().toString());
-                f.setValue(BigDecimal.valueOf(Long.parseLong(editValue.getText().toString())));
+                if (StringUtils.isBlank(editValue.getText().toString())){
+                    f.setValue(null);
+                } else {
+                    f.setValue(BigDecimal.valueOf(Long.parseLong(editValue.getText().toString())));
+                }
                 //get id trans category
                 f.setIdTransactionCategory(categorys.get(categorySpinner.getSelectedItemPosition()).getId());
                 //get Currency
