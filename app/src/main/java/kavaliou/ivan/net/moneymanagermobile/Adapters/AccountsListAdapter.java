@@ -5,12 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
-import kavaliou.ivan.net.moneymanagermobile.MainActivity;
 import kavaliou.ivan.net.moneymanagermobile.R;
 import kavaliou.ivan.net.moneymanagermobile.forms.AccountForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;

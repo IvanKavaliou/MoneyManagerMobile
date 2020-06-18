@@ -1,6 +1,8 @@
 package kavaliou.ivan.net.moneymanagermobile;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,9 +17,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -26,6 +30,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -45,6 +51,7 @@ import kavaliou.ivan.net.moneymanagermobile.forms.TransactionForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
 import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
+import kavaliou.ivan.net.moneymanagermobile.utils.enums.CurrencyType;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenTransActivMode;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.TransactionType;
 
@@ -52,9 +59,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private User user;
-
     private TextView textErrors;
-
     private RequestQueue queue;
 
     private ListView accountsList;
@@ -65,14 +70,20 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<TransactionForm> transactionsExpenses;
     private Button buttonAddExpenses;
     private Button buttonAddIncome;
-
-
+    private Button buttonOpenAddAccounts;
+    private boolean addAccountsOpen = false;
+    private Button buttonAddAccount;
+    private boolean fabOpen = false;
+    private Spinner addAccountSpinner;
+    private FloatingActionButton fab;
 
     private ResponseErrorListner responseErrorListner;
 
     private static final String URL_GET_ACCOUNTS ="http://192.168.0.101:8080/rest/transactions/accounts";
     private static final String URL_GET_INCOMES ="http://192.168.0.101:8080/rest/trnsactions/income";
     private static final String URL_GET_EXPENSES ="http://192.168.0.101:8080/rest/trnsactions/expenses";
+    private static final String URL_DELETE_CURRENCY ="http://192.168.0.101:8080/rest/currency/delete/";
+    private static final String URL_ADD_CURRENCY ="http://192.168.0.101:8080/rest/currency/add/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +91,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         queue = Volley.newRequestQueue(this);
 
+        addAccountSpinner = (Spinner) findViewById(R.id.addAccountSpinner);
         buttonAddExpenses = (Button) findViewById(R.id.buttonAddExpenses);
         buttonAddExpenses.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +107,31 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        buttonAddAccount = (Button) findViewById(R.id.buttonAddAccount);
+        buttonAddAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addAccount(CurrencyType.valueOf(addAccountSpinner.getSelectedItem().toString()));
+            }
+        });
+
+        buttonOpenAddAccounts = (Button) findViewById(R.id.buttonOpenAddAccounts);
+        buttonOpenAddAccounts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (addAccountsOpen){
+                    buttonAddAccount.setVisibility(View.GONE);
+                    addAccountSpinner.setVisibility(View.GONE);
+                    buttonOpenAddAccounts.setText(R.string.add_accounts);
+                    addAccountsOpen = false;
+                } else {
+                    buttonAddAccount.setVisibility(View.VISIBLE);
+                    addAccountSpinner.setVisibility(View.VISIBLE);
+                    buttonOpenAddAccounts.setText(R.string.close);
+                    addAccountsOpen = true;
+                }
+            }
+        });
 
 
         textErrors = (TextView) findViewById(R.id.textErrors);
@@ -103,11 +140,20 @@ public class MainActivity extends AppCompatActivity
         initUser();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (fabOpen){
+                    buttonAddExpenses.setVisibility(View.GONE);
+                    buttonAddIncome.setVisibility(View.GONE);
+                    fabOpen = false;
+                } else {
+                    buttonAddExpenses.setVisibility(View.VISIBLE);
+                    buttonAddIncome.setVisibility(View.VISIBLE);
+                    fabOpen = true;
+                }
             }
         });
 
@@ -125,6 +171,26 @@ public class MainActivity extends AppCompatActivity
 
         //queue = Volley.newRequestQueue(this);
 
+    }
+
+    private void addAccount(CurrencyType currencyType) {
+        JsonObjectRequest jRequest = new JsonObjectRequest(Request.Method.GET, URL_ADD_CURRENCY + currencyType.name(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        buttonOpenAddAccounts.callOnClick();
+                       update();
+                    }
+                }, responseErrorListner)
+
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return AuthUtils.authUser(user);
+            }
+        };
+        Volley.newRequestQueue(this).add(jRequest);
+        queue.start();
     }
 
     private void update() {
@@ -152,9 +218,38 @@ public class MainActivity extends AppCompatActivity
         textViewEmail.setText(user.getEmail());
     }
 
+    private void initAddAccountsSpiner(){
+        ArrayList<CurrencyType> tmp = new ArrayList<CurrencyType>();
+        for (AccountForm a : accounts){
+            tmp.add(a.getCurrencyType());
+        }
+
+        String[] items = new String[CurrencyType.values().length-accounts.size()];
+        int i = 0;
+        for(CurrencyType c : CurrencyType.values()){
+            if (!tmp.contains(c)){
+                items[i] = c.name();
+                i++;
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        addAccountSpinner.setAdapter(adapter);
+
+    }
+
     private void initAccounts(){
-        accountsList = (ListView) findViewById(R.id.accountsList);
+
         accounts = new ArrayList<>();
+        accountsList = (ListView) findViewById(R.id.accountsList);
+        initAddAccountsSpiner();
+        accountsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                deleteAccount(accounts.get(position).getCurrencyType());
+                return false;
+            }
+        });
         JsonArrayRequest jRequest = new JsonArrayRequest(Request.Method.GET, URL_GET_ACCOUNTS, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -164,13 +259,13 @@ public class MainActivity extends AppCompatActivity
                             try {
                                 AccountForm account =  gson.fromJson(response.getJSONObject(i).toString(),AccountForm.class);
                                 accounts.add(account);
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         AccountsListAdapter accountsListAdapter = new AccountsListAdapter(getApplicationContext(), accounts, user);
                         accountsList.setAdapter(accountsListAdapter);
+                        initAddAccountsSpiner();
                     }
                 }, responseErrorListner)
 
@@ -183,6 +278,48 @@ public class MainActivity extends AppCompatActivity
         Volley.newRequestQueue(this).add(jRequest);
         queue.start();
 
+    }
+
+    private void deleteAccount(final CurrencyType currencyType) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteCurrency(currencyType);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.are_you_sure).setPositiveButton(R.string.button_yes, dialogClickListener)
+                .setNegativeButton(R.string.button_no, dialogClickListener);
+
+        builder.show();
+    }
+
+    private void deleteCurrency(CurrencyType currencyType){
+
+        StringRequest request = new StringRequest(StringRequest.Method.GET, URL_DELETE_CURRENCY + currencyType.name(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                update();
+            }
+        }, responseErrorListner) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return AuthUtils.authUser(user);
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
+        queue.start();
     }
 
     private void initTransactions(){
@@ -275,6 +412,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==100){
+            fab.callOnClick();
             update();
         }
     }
@@ -316,25 +454,27 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        if (addAccountsOpen){
+            buttonOpenAddAccounts.callOnClick();
+        }
+        if (fabOpen){
+            fab.callOnClick();
+        }
+
+        accountsList.setVisibility(View.GONE);
+        transactionsExpensesList.setVisibility(View.GONE);
+        transactionsIncomeList.setVisibility(View.GONE);
+        buttonOpenAddAccounts.setVisibility(View.GONE);
         textErrors.setVisibility(View.GONE);
+
         if (id == R.id.nav_accounts) {
             accountsList.setVisibility(View.VISIBLE);
-            transactionsExpensesList.setVisibility(View.GONE);
-            transactionsIncomeList.setVisibility(View.GONE);
-            buttonAddExpenses.setVisibility(View.GONE);
-            buttonAddIncome.setVisibility(View.GONE);
+            buttonOpenAddAccounts.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_incomes) {
-            accountsList.setVisibility(View.GONE);
-            transactionsExpensesList.setVisibility(View.GONE);
             transactionsIncomeList.setVisibility(View.VISIBLE);
-            buttonAddExpenses.setVisibility(View.GONE);
-            buttonAddIncome.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_cexpenses) {
-            accountsList.setVisibility(View.GONE);
             transactionsExpensesList.setVisibility(View.VISIBLE);
-            transactionsIncomeList.setVisibility(View.GONE);
-            buttonAddExpenses.setVisibility(View.VISIBLE);
-            buttonAddIncome.setVisibility(View.GONE);
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_logout) {

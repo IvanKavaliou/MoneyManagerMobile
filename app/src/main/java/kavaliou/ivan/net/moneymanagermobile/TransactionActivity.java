@@ -2,10 +2,13 @@ package kavaliou.ivan.net.moneymanagermobile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +31,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +46,7 @@ import kavaliou.ivan.net.moneymanagermobile.forms.TransactionCategoryForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.TransactionForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
 import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
+import kavaliou.ivan.net.moneymanagermobile.utils.DateTimeUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.CurrencyType;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenTransActivMode;
@@ -71,6 +78,7 @@ public class TransactionActivity extends AppCompatActivity {
     private static final String URL_DELETE_TRANS = "http://192.168.0.101:8080/rest/trnsactions/delete/";
     private static final String URL_SAVE_TRANS = "http://192.168.0.101:8080/rest/transactions";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +93,13 @@ public class TransactionActivity extends AppCompatActivity {
         errorTextView = (TextView) findViewById(R.id.errorTextView);
         buttonDeleteTrans = (Button) findViewById(R.id.buttonDeleteTrans);
         buttonSaveTrans = (Button) findViewById(R.id.buttonSaveTrans);
+
+        categorySpinner.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return false;
+            }
+        });
 
 
         user = (User) getIntent().getSerializableExtra("user");
@@ -111,8 +126,8 @@ public class TransactionActivity extends AppCompatActivity {
             };
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener);
+            builder.setMessage(R.string.are_you_sure_delete_account).setPositiveButton(R.string.button_yes, dialogClickListener)
+                    .setNegativeButton(R.string.button_no, dialogClickListener);
 
             buttonDeleteTrans.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -127,6 +142,8 @@ public class TransactionActivity extends AppCompatActivity {
 
         initAccounts();
         initCategorys();
+
+        editDate.setText(DateTimeUtils.parseDate(new Date()));
 
         if (mode == OpenTransActivMode.EDIT){
             editDate.setText(transactionForm.getDate());

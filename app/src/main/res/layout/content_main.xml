@@ -20,23 +20,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <Spinner
+            android:id="@+id/addAccountSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"/>
+        <Button
+            android:id="@+id/buttonAddAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/add"/>
+
+        <Button
+            android:id="@+id/buttonOpenAddAccounts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_accounts"/>
+
+
         <ListView
             android:id="@+id/transactionsIncomeList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
-        <Button
-            android:id="@+id/buttonAddIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/add_income"/>
 
         <ListView
             android:id="@+id/transactionsExpensesList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/buttonAddIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/add_income"/>
 
         <Button
             android:id="@+id/buttonAddExpenses"

@@ -37,4 +37,11 @@
     <string name="type">Type</string>
     <string name="add_income">Add income</string>
     <string name="add_expenses">Add expenses</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="are_you_sure_delete_account">Are you sure you want to delete account?</string>
+    <string name="add_accounts">Add Accounts</string>
+    <string name="add">Add</string>
+    <string name="close">Close</string>
 </resources>
