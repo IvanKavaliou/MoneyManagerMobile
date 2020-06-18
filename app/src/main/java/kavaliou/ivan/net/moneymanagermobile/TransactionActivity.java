@@ -2,11 +2,11 @@ package kavaliou.ivan.net.moneymanagermobile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,17 +31,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import br.com.sapereaude.maskedEditText.MaskedEditText;
-import kavaliou.ivan.net.moneymanagermobile.Adapters.AccountsListAdapter;
 import kavaliou.ivan.net.moneymanagermobile.forms.AccountForm;
-import kavaliou.ivan.net.moneymanagermobile.forms.LoginForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.TransactionCategoryForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.TransactionForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
@@ -49,7 +44,7 @@ import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.DateTimeUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.CurrencyType;
-import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenTransActivMode;
+import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenEditActivMode;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.TransactionType;
 
 public class TransactionActivity extends AppCompatActivity {
@@ -57,7 +52,7 @@ public class TransactionActivity extends AppCompatActivity {
     private RequestQueue queue;
 
     private User user;
-    private OpenTransActivMode mode;
+    private OpenEditActivMode mode;
     private TransactionForm transactionForm = null;
     private TransactionType type;
     private ArrayList<AccountForm> accounts;
@@ -71,6 +66,8 @@ public class TransactionActivity extends AppCompatActivity {
     private Spinner categorySpinner;
     private Button buttonDeleteTrans;
     private Button buttonSaveTrans;
+    private Button buttonAddCategory;
+    private Button buttonEditategory;
 
     private ResponseErrorListner responseErrorListner;
 
@@ -93,20 +90,28 @@ public class TransactionActivity extends AppCompatActivity {
         errorTextView = (TextView) findViewById(R.id.errorTextView);
         buttonDeleteTrans = (Button) findViewById(R.id.buttonDeleteTrans);
         buttonSaveTrans = (Button) findViewById(R.id.buttonSaveTrans);
+        buttonAddCategory = (Button) findViewById(R.id.buttonAddCategory);
+        buttonEditategory = (Button) findViewById(R.id.buttonEditategory);
 
-        categorySpinner.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        buttonAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return false;
+            public void onClick(View v) {
+                openEditCategory(null, OpenEditActivMode.ADD);
             }
         });
 
+        buttonEditategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openEditCategory(categorys.get(categorySpinner.getSelectedItemPosition()), OpenEditActivMode.EDIT);
+            }
+        });
 
         user = (User) getIntent().getSerializableExtra("user");
-        mode = (OpenTransActivMode) getIntent().getSerializableExtra("mode");
+        mode = (OpenEditActivMode) getIntent().getSerializableExtra("mode");
         type = (TransactionType) getIntent().getSerializableExtra("type");
         accounts = (ArrayList<AccountForm>) getIntent().getSerializableExtra("accounts");
-        if (mode == OpenTransActivMode.EDIT) {
+        if (mode == OpenEditActivMode.EDIT) {
             transactionForm = (TransactionForm) getIntent().getSerializableExtra("transactionForm");
             buttonDeleteTrans.setVisibility(View.VISIBLE);
 
@@ -145,7 +150,7 @@ public class TransactionActivity extends AppCompatActivity {
 
         editDate.setText(DateTimeUtils.parseDate(new Date()));
 
-        if (mode == OpenTransActivMode.EDIT){
+        if (mode == OpenEditActivMode.EDIT){
             editDate.setText(transactionForm.getDate());
             editDescription.setText(transactionForm.getName());
             editValue.setText(transactionForm.getValue().toString());
@@ -155,7 +160,7 @@ public class TransactionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TransactionForm f = new TransactionForm();
-                if (mode == OpenTransActivMode.EDIT){
+                if (mode == OpenEditActivMode.EDIT){
                     f.setId(transactionForm.getId());
                 }
                 f.setDate(editDate.getText().toString());
@@ -176,6 +181,28 @@ public class TransactionActivity extends AppCompatActivity {
 
     }
 
+    private void openEditCategory(TransactionCategoryForm form, OpenEditActivMode mode) {
+        Intent i = new Intent(this, EditCategoryActivity.class);
+        i.putExtra("user", user);
+        i.putExtra("mode", mode);
+        i.putExtra("form",form);
+        i.putExtra("type",type);
+        startActivityForResult(i, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==100){
+            update();
+        }
+    }
+
+    private void update() {
+        initAccounts();
+        initCategorys();
+    }
+
     private void initAccounts(){
         String[] items = new String[accounts.size()];
         int i = 0;
@@ -185,7 +212,7 @@ public class TransactionActivity extends AppCompatActivity {
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         accountSpinner.setAdapter(adapter);
-        if (mode == OpenTransActivMode.EDIT){
+        if (mode == OpenEditActivMode.EDIT){
             int spinnerPosition = adapter.getPosition(transactionForm.getCurrencyType().name());
             accountSpinner.setSelection(spinnerPosition);
         }
@@ -216,7 +243,7 @@ public class TransactionActivity extends AppCompatActivity {
                         }
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, items);
                         categorySpinner.setAdapter(adapter);
-                        if (mode == OpenTransActivMode.EDIT){
+                        if (mode == OpenEditActivMode.EDIT){
                             int spinnerPosition = adapter.getPosition(transactionForm.getTransactionCategory().getName());
                             categorySpinner.setSelection(spinnerPosition);
                         }

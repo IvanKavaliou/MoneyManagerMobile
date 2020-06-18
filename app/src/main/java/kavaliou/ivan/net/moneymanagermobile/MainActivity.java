@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,7 +26,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -39,9 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import kavaliou.ivan.net.moneymanagermobile.Adapters.AccountsListAdapter;
@@ -52,7 +47,7 @@ import kavaliou.ivan.net.moneymanagermobile.model.User;
 import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.CurrencyType;
-import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenTransActivMode;
+import kavaliou.ivan.net.moneymanagermobile.utils.enums.OpenEditActivMode;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.TransactionType;
 
 public class MainActivity extends AppCompatActivity
@@ -96,14 +91,14 @@ public class MainActivity extends AppCompatActivity
         buttonAddExpenses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTransactionActivity(TransactionType.EXPENSES, OpenTransActivMode.ADD, null);
+                openTransactionActivity(TransactionType.EXPENSES, OpenEditActivMode.ADD, null);
             }
         });
         buttonAddIncome = (Button) findViewById(R.id.buttonAddIncome);
         buttonAddIncome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTransactionActivity(TransactionType.INCOME, OpenTransActivMode.ADD, null);
+                openTransactionActivity(TransactionType.INCOME, OpenEditActivMode.ADD, null);
             }
         });
 
@@ -198,13 +193,13 @@ public class MainActivity extends AppCompatActivity
         initTransactions();
     }
 
-    private void openTransactionActivity(TransactionType type, OpenTransActivMode mode, TransactionForm form) {
+    private void openTransactionActivity(TransactionType type, OpenEditActivMode mode, TransactionForm form) {
         Intent i = new Intent(this, TransactionActivity.class);
         i.putExtra("user", user);
         i.putExtra("mode", mode);
         i.putExtra("type", type);
         i.putExtra("accounts", accounts);
-        if (mode == OpenTransActivMode.EDIT){
+        if (mode == OpenEditActivMode.EDIT){
             i.putExtra("transactionForm", form);
         }
         startActivityForResult(i, 100);
@@ -332,7 +327,7 @@ public class MainActivity extends AppCompatActivity
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 openTransactionActivity(
                         TransactionType.INCOME,
-                        OpenTransActivMode.EDIT,
+                        OpenEditActivMode.EDIT,
                         transactionsIncomes.get(position));
                 return false;
             }
@@ -344,7 +339,7 @@ public class MainActivity extends AppCompatActivity
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 openTransactionActivity(
                         TransactionType.EXPENSES,
-                        OpenTransActivMode.EDIT,
+                        OpenEditActivMode.EDIT,
                         transactionsExpenses.get(position));
                 return false;
             }
