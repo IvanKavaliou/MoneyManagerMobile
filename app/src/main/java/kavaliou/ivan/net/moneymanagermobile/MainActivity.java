@@ -18,6 +18,9 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,17 +34,23 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import kavaliou.ivan.net.moneymanagermobile.Adapters.AccountsListAdapter;
 import kavaliou.ivan.net.moneymanagermobile.Adapters.TransactionsListAdapter;
 import kavaliou.ivan.net.moneymanagermobile.forms.AccountForm;
+import kavaliou.ivan.net.moneymanagermobile.forms.ChangeEmailForm;
+import kavaliou.ivan.net.moneymanagermobile.forms.LoginForm;
+import kavaliou.ivan.net.moneymanagermobile.forms.PasswordChangeForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.TransactionForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
 import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
@@ -71,6 +80,18 @@ public class MainActivity extends AppCompatActivity
     private boolean fabOpen = false;
     private Spinner addAccountSpinner;
     private FloatingActionButton fab;
+    private LinearLayout layoutSettings;
+    private LinearLayout layoutPassword;
+    private CheckBox checkboxEditPassword;
+    private CheckBox checkboxEditEmail;
+    private boolean passChangeOpen = false;
+    private boolean emailChangeOpen = false;
+    private EditText editOldPassword;
+    private EditText editNewPassword;
+    private EditText editNewPasswordRepeat;
+    private EditText editEmail;
+    private Button buttonSaveEmail;
+    private Button buttonChangePassword;
 
     private ResponseErrorListner responseErrorListner;
 
@@ -79,6 +100,8 @@ public class MainActivity extends AppCompatActivity
     private static final String URL_GET_EXPENSES ="http://192.168.0.101:8080/rest/trnsactions/expenses";
     private static final String URL_DELETE_CURRENCY ="http://192.168.0.101:8080/rest/currency/delete/";
     private static final String URL_ADD_CURRENCY ="http://192.168.0.101:8080/rest/currency/add/";
+    private static final String URL_EDIT_EMAIL ="http://192.168.0.101:8080/rest/change/email";
+    private static final String URL_CHANGE_PASSWORD ="http://192.168.0.101:8080/rest/change/password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,6 +234,124 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         TextView textViewEmail = (TextView) headerView.findViewById(R.id.textViewEmail);
         textViewEmail.setText(user.getEmail());
+
+        initSettings();
+    }
+
+    private void initSettings(){
+        layoutSettings = (LinearLayout) findViewById(R.id.layoutSettings);
+        layoutPassword = (LinearLayout) findViewById(R.id.layoutPassword);
+        checkboxEditPassword = (CheckBox) findViewById(R.id.checkboxEditPassword);
+        checkboxEditEmail = (CheckBox) findViewById(R.id.checkboxEditEmail);
+        editOldPassword = (EditText) findViewById(R.id.editOldPassword);
+        editNewPassword = (EditText) findViewById(R.id.editNewPassword);
+        editNewPasswordRepeat = (EditText) findViewById(R.id.editNewPasswordRepeat);
+        editEmail = (EditText) findViewById(R.id.editEmail);
+        buttonSaveEmail = (Button) findViewById(R.id.buttonSaveEmail);
+        buttonChangePassword = (Button) findViewById(R.id.buttonChangePassword);
+
+        editEmail.setText(user.getEmail());
+
+        checkboxEditEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(emailChangeOpen){
+                    editEmail.setFocusable(false);
+                    buttonSaveEmail.setVisibility(View.GONE);
+                    emailChangeOpen = false;
+                } else {
+                    editEmail.setFocusableInTouchMode(true);
+                    buttonSaveEmail.setVisibility(View.VISIBLE);
+                    emailChangeOpen = true;
+                }
+            }
+        });
+
+        checkboxEditPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(passChangeOpen){
+                    layoutPassword.setVisibility(View.GONE);
+                    editOldPassword.setText("");
+                    editNewPassword.setText("");
+                    editNewPasswordRepeat.setText("");
+                    passChangeOpen = false;
+                } else {
+                    layoutPassword.setVisibility(View.VISIBLE);
+                    passChangeOpen = true;
+                }
+            }
+        });
+
+        buttonSaveEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveEmail(editEmail.getText().toString());
+            }
+        });
+
+        buttonChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changePassword(PasswordChangeForm.builder()
+                        .oldPassword(editOldPassword.getText().toString())
+                        .password(editNewPassword.getText().toString())
+                        .passwordRepeat(editNewPasswordRepeat.getText().toString())
+                        .build());
+            }
+        });
+    }
+
+    private void changePassword(PasswordChangeForm form){
+        Gson gson = new Gson();
+        JSONObject parameters = null;
+        try {
+            parameters = new JSONObject(gson.toJson(form));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(StringRequest.Method.POST, URL_CHANGE_PASSWORD, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                setResult(100);
+                finish();
+            }
+        }, responseErrorListner) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return AuthUtils.authUser(user);
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
+        queue.start();
+    }
+
+    private void saveEmail(final String email) {
+        Gson gson = new Gson();
+        JSONObject parameters = null;
+        try {
+            parameters = new JSONObject(gson.toJson(new ChangeEmailForm(email)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(StringRequest.Method.POST, URL_EDIT_EMAIL, parameters,new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                setResult(100);
+                finish();
+            }
+        }, responseErrorListner) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return AuthUtils.authUser(user);
+            }
+        };
+
+        Volley.newRequestQueue(this).add(request);
+        queue.start();
     }
 
     private void initAddAccountsSpiner(){
@@ -456,12 +597,16 @@ public class MainActivity extends AppCompatActivity
         if (fabOpen){
             fab.callOnClick();
         }
+        if(passChangeOpen){
+            checkboxEditPassword.callOnClick();
+        }
 
         accountsList.setVisibility(View.GONE);
         transactionsExpensesList.setVisibility(View.GONE);
         transactionsIncomeList.setVisibility(View.GONE);
         buttonOpenAddAccounts.setVisibility(View.GONE);
         textErrors.setVisibility(View.GONE);
+        layoutSettings.setVisibility(View.GONE);
 
         if (id == R.id.nav_accounts) {
             accountsList.setVisibility(View.VISIBLE);
@@ -471,7 +616,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_cexpenses) {
             transactionsExpensesList.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_settings) {
-
+            layoutSettings.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_logout) {
             finish();
         }

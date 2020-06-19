@@ -171,7 +171,9 @@ public class TransactionActivity extends AppCompatActivity {
                     f.setValue(BigDecimal.valueOf(Long.parseLong(editValue.getText().toString())));
                 }
                 //get id trans category
-                f.setIdTransactionCategory(categorys.get(categorySpinner.getSelectedItemPosition()).getId());
+                if (categorys.size() > 0){
+                    f.setIdTransactionCategory(categorys.get(categorySpinner.getSelectedItemPosition()).getId());
+                }
                 //get Currency
                 f.setCurrencyType(CurrencyType.valueOf(accountSpinner.getSelectedItem().toString()));
 

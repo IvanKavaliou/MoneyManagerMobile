@@ -46,4 +46,8 @@
     <string name="close">Close</string>
     <string name="category_name">Category Name</string>
     <string name="edit">Edit</string>
+    <string name="change">Change</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New Password</string>
+    <string name="repeat_new_password">Repeat new password</string>
 </resources>

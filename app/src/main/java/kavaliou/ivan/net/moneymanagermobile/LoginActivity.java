@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kavaliou.ivan.net.moneymanagermobile.forms.LoginForm;
+import kavaliou.ivan.net.moneymanagermobile.forms.RegistrationForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.CurrencyType;
@@ -130,7 +131,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void regisrtation() {
+        Gson gson = new Gson();
+        JSONObject parameters = null;
+        try {
+            parameters = new JSONObject(gson.toJson(
+                    RegistrationForm.builder()
+                            .email(editEmail.getText().toString())
+                            .password(editPassword.getText().toString())
+                            .passwordRepeat(editPasswordRepeat.getText().toString())
+                            .agrements(true)
+                            .currency(CurrencyType.valueOf(dropdown.getSelectedItem().toString()))
+                            .build()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        ResponseErrorListner errorListner = new ResponseErrorListner();
+        errorListner.setErrorTextView(errorTextView);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, URL_REGISTRATION, parameters, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Gson gson = new Gson();
+                User user = gson.fromJson(response.toString(),User.class);
+                startMainActivity(user);
+            }
+        }, errorListner);
+
+        Volley.newRequestQueue(this).add(jsonRequest);
     }
 
     private void login(){
