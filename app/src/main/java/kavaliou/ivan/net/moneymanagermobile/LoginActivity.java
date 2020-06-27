@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,11 +28,13 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import kavaliou.ivan.net.moneymanagermobile.forms.LoginForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.RegistrationForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
+import kavaliou.ivan.net.moneymanagermobile.utils.AuthUtils;
 import kavaliou.ivan.net.moneymanagermobile.utils.ResponseErrorListner;
 import kavaliou.ivan.net.moneymanagermobile.utils.enums.CurrencyType;
 
@@ -80,8 +83,8 @@ public class LoginActivity extends AppCompatActivity {
         imageLoginLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editEmail.setText("user@user.ru");
-                editPassword.setText("user");
+                editEmail.setText("ivan@ivan.com");
+                editPassword.setText("ivan");
             }
         });
 
@@ -155,7 +158,14 @@ public class LoginActivity extends AppCompatActivity {
                 User user = gson.fromJson(response.toString(),User.class);
                 startMainActivity(user);
             }
-        }, errorListner);
+        }, errorListner){
+            @Override
+            public Map<String, String> getHeaders()  {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Accept-Language", Locale.getDefault().getLanguage() );
+                return params;
+            }
+        };
 
         Volley.newRequestQueue(this).add(jsonRequest);
     }
@@ -181,7 +191,14 @@ public class LoginActivity extends AppCompatActivity {
                 User user = gson.fromJson(response.toString(),User.class);
                 startMainActivity(user);
             }
-        }, errorListner);
+        }, errorListner) {
+            @Override
+            public Map<String, String> getHeaders()  {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Accept-Language", Locale.getDefault().getLanguage() );
+                return params;
+            }
+        };
 
         Volley.newRequestQueue(this).add(jsonRequest);
     }

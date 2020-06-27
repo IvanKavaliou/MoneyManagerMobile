@@ -94,13 +94,13 @@
             android:text="@string/category"/>
         <Button
         android:id="@+id/buttonAddCategory"
-        android:layout_width="55dp"
+        android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginLeft="15dp"
         android:text="@string/add"/>
         <Button
             android:id="@+id/buttonEditategory"
-            android:layout_width="55dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_marginLeft="15dp"
             android:text="@string/edit"/>

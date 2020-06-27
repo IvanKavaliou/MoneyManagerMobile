@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity
         buttonAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addAccount(CurrencyType.valueOf(addAccountSpinner.getSelectedItem().toString()));
+                if (addAccountSpinner.getCount() > 0){
+                    addAccount(CurrencyType.valueOf(addAccountSpinner.getSelectedItem().toString()));
+                }
             }
         });
 

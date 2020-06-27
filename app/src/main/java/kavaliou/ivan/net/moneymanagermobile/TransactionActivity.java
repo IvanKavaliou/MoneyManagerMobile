@@ -131,7 +131,7 @@ public class TransactionActivity extends AppCompatActivity {
             };
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.are_you_sure_delete_account).setPositiveButton(R.string.button_yes, dialogClickListener)
+            builder.setMessage(R.string.are_you_sure).setPositiveButton(R.string.button_yes, dialogClickListener)
                     .setNegativeButton(R.string.button_no, dialogClickListener);
 
             buttonDeleteTrans.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +168,7 @@ public class TransactionActivity extends AppCompatActivity {
                 if (StringUtils.isBlank(editValue.getText().toString())){
                     f.setValue(null);
                 } else {
-                    f.setValue(BigDecimal.valueOf(Long.parseLong(editValue.getText().toString())));
+                    f.setValue(BigDecimal.valueOf(Double.valueOf(editValue.getText().toString())));
                 }
                 //get id trans category
                 if (categorys.size() > 0){

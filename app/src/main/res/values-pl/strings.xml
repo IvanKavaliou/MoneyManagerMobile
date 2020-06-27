@@ -23,7 +23,7 @@
     <string name="incomes">Przychody</string>
     <string name="expenses">Wydatki</string>
     <string name= "service_unavalible">Usługa niedostępna: (</string>
-    <string name="balance">Balans</string>
+    <string name="balance">Stan konta</string>
     <string name="day">Dzień:</string>
     <string name="week">Tydzień:</string>
     <string name="month">Miesiąc:</string>
@@ -36,9 +36,9 @@
     <string name="delete">Usuń</string>
     <string name="type">Typ</string>
     <string name="add_income">Dodaj przychód</string>
-    <string name="add_expenses">Dodaj zużycie</string>
+    <string name="add_expenses">Dodaj wydatek</string>
     <string name="button_yes" >Tak</string>
-    <string name="button_no">Brak</string>
+    <string name="button_no">Nie</string>
     <string name="are_you_sure">Jesteś pewien?</string>
     <string name="are_you_sure_delete_account">Czy na pewno chcesz usunąć konto?</string>
     <string name="add_accounts">Dodaj konto</string>
