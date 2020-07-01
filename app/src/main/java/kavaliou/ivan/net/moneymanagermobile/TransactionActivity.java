@@ -4,11 +4,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,9 +70,9 @@ public class TransactionActivity extends AppCompatActivity {
 
     private ResponseErrorListner responseErrorListner;
 
-    private static final String URL_GET_CATEGORYS = "http://192.168.0.101:8080/rest/category/";
-    private static final String URL_DELETE_TRANS = "http://192.168.0.101:8080/rest/trnsactions/delete/";
-    private static final String URL_SAVE_TRANS = "http://192.168.0.101:8080/rest/transactions";
+    private static final String URL_GET_CATEGORYS = AuthUtils.SERVER_ADDRESS + "rest/category/";
+    private static final String URL_DELETE_TRANS = AuthUtils.SERVER_ADDRESS + "rest/trnsactions/delete/";
+    private static final String URL_SAVE_TRANS = AuthUtils.SERVER_ADDRESS + "rest/transactions";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

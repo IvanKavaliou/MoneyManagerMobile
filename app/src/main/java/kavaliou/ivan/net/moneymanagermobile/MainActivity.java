@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,22 +34,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import kavaliou.ivan.net.moneymanagermobile.Adapters.AccountsListAdapter;
 import kavaliou.ivan.net.moneymanagermobile.Adapters.TransactionsListAdapter;
 import kavaliou.ivan.net.moneymanagermobile.forms.AccountForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.ChangeEmailForm;
-import kavaliou.ivan.net.moneymanagermobile.forms.LoginForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.PasswordChangeForm;
 import kavaliou.ivan.net.moneymanagermobile.forms.TransactionForm;
 import kavaliou.ivan.net.moneymanagermobile.model.User;
@@ -95,13 +91,13 @@ public class MainActivity extends AppCompatActivity
 
     private ResponseErrorListner responseErrorListner;
 
-    private static final String URL_GET_ACCOUNTS ="http://192.168.0.101:8080/rest/transactions/accounts";
-    private static final String URL_GET_INCOMES ="http://192.168.0.101:8080/rest/trnsactions/income";
-    private static final String URL_GET_EXPENSES ="http://192.168.0.101:8080/rest/trnsactions/expenses";
-    private static final String URL_DELETE_CURRENCY ="http://192.168.0.101:8080/rest/currency/delete/";
-    private static final String URL_ADD_CURRENCY ="http://192.168.0.101:8080/rest/currency/add/";
-    private static final String URL_EDIT_EMAIL ="http://192.168.0.101:8080/rest/change/email";
-    private static final String URL_CHANGE_PASSWORD ="http://192.168.0.101:8080/rest/change/password";
+    private static final String URL_GET_ACCOUNTS = AuthUtils.SERVER_ADDRESS + "rest/transactions/accounts";
+    private static final String URL_GET_INCOMES = AuthUtils.SERVER_ADDRESS + "rest/trnsactions/income";
+    private static final String URL_GET_EXPENSES = AuthUtils.SERVER_ADDRESS + "rest/trnsactions/expenses";
+    private static final String URL_DELETE_CURRENCY = AuthUtils.SERVER_ADDRESS + "rest/currency/delete/";
+    private static final String URL_ADD_CURRENCY = AuthUtils.SERVER_ADDRESS + "rest/currency/add/";
+    private static final String URL_EDIT_EMAIL = AuthUtils.SERVER_ADDRESS + "rest/change/email";
+    private static final String URL_CHANGE_PASSWORD = AuthUtils.SERVER_ADDRESS + "rest/change/password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

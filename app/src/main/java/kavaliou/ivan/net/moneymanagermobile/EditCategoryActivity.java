@@ -2,9 +2,8 @@ package kavaliou.ivan.net.moneymanagermobile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,8 +44,8 @@ public class EditCategoryActivity extends AppCompatActivity {
 
     private RequestQueue queue;
     private ResponseErrorListner responseErrorListner;
-    private static final String URL_DELETE_CATEGORY = "http://192.168.0.101:8080/rest/category/delete/";
-    private static final String URL_ADD_CATEGORY = "http://192.168.0.101:8080/rest/category/save";
+    private static final String URL_DELETE_CATEGORY = AuthUtils.SERVER_ADDRESS + "rest/category/delete/";
+    private static final String URL_ADD_CATEGORY = AuthUtils.SERVER_ADDRESS + "rest/category/save";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

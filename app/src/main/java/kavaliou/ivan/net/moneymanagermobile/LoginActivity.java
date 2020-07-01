@@ -13,20 +13,16 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -49,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView imageLoginLogo;
     private Spinner dropdown;
 
-    private static String URL_LOGIN = "http://192.168.0.101:8080/rest/login";
-    private static String URL_REGISTRATION = "http://192.168.0.101:8080/rest/registration";
+    private static String URL_LOGIN = AuthUtils.SERVER_ADDRESS + "rest/login";
+    private static String URL_REGISTRATION = AuthUtils.SERVER_ADDRESS + "rest/registration";
 
     private RequestQueue queue;
 
